@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student List</title>
+</head>
+
+<body>
+    <h1>Student Details</h1>
+    {% for students in students %}
+    <tr>
+        <td><a href="update/{{students.id}}"></a></td>
+        <td>{{students.first_name}}</td>
+        <td>{{students.last_name}}</td>
+        <td><a href="delete/{{students.id}}">Delete</a></td>
+    </tr>
+    {% endfor %}
+</body>
+</html>

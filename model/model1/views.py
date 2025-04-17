@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from .forms import StudentListForm
 from django.http import HttpResponseRedirect
 from .models import studentlist
-# Create your views here.
 
 
 def create_list(request):
@@ -10,7 +10,7 @@ def create_list(request):
         form = StudentListForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect("/admin")
+            return HttpResponseRedirect("/data/list")
     else:
         form = StudentListForm()
     return render(request, "student.html", {"form": form})
@@ -21,13 +21,21 @@ def get_list(request):
     return render(request, 'studentlist.html', {'students': students})
 
 
-def update_list(request):
+def update_list(request, id):
+    obj = get_object_or_404(studentlist, id=id) 
     if request.method == "POST":
-        data = request.data.id
+        form = StudentListForm(request.POST, instance=obj) 
+        if form.is_valid():
+            form.save() 
+            return redirect(reverse('Student list')) 
+    else:
+        
+        form = StudentListForm(instance=obj) 
+    return render(request, 'update_list.html', {'form': form}) 
+
 
 def delete_list(request, id):
     student = studentlist.objects.get(id=id)
-    student.delete()
-    return HttpResponseRedirect("/registration/list")
-
-
+    if request.method == "POST":
+        student.delete()
+        return redirect(reverse('Student list'))
